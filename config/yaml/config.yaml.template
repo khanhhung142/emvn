@@ -1,0 +1,13 @@
+server:
+  port: ${SERVER_PORT}
+
+database:
+  connect_string: ${DATABASE_CONNECT_STRING}
+  database_name: ${DATABAE_NAME}
+
+log:
+  level: ${LOG_LEVEL}
+
+auth:
+  secret_key: ${AUTH_JWT_SECRET_KEY}
+  access_token_expire_minute: ${AUTH_ACCESS_TOKEN_EXPIRE_MINUTE}

@@ -1,0 +1,13 @@
+server:
+  port: :8080
+
+database:
+  connect_string: mongodb://localhost:27017
+  database_name: test
+
+log:
+  level: debug
+
+auth:
+  secret_key: +hd>PywO8jrAnIewJvK7U[bU1;*28m
+  access_token_expire_minute: 60

@@ -1,0 +1,519 @@
+definitions:
+  auth_controller.SignInInput:
+    properties:
+      password:
+        maxLength: 50
+        minLength: 8
+        type: string
+      username:
+        maxLength: 50
+        minLength: 8
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  auth_controller.SignInOutput:
+    properties:
+      exp_time:
+        type: integer
+      token:
+        type: string
+    type: object
+  auth_controller.SignUpInput:
+    properties:
+      password:
+        maxLength: 50
+        minLength: 8
+        type: string
+      username:
+        maxLength: 50
+        minLength: 8
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  auth_controller.SignUpOutput:
+    properties:
+      success:
+        type: boolean
+    type: object
+  model.MusicTrack:
+    properties:
+      album:
+        type: string
+      artist:
+        type: string
+      duration:
+        type: integer
+      genre:
+        type: string
+      id:
+        type: string
+      link:
+        description: URL or local file path, get from storage
+        type: string
+      title:
+        type: string
+      year:
+        type: integer
+    type: object
+  model.Playlist:
+    properties:
+      created_by:
+        description: uid of the user who created the playlist
+        type: string
+      description:
+        type: string
+      genre:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      track_ids:
+        items:
+          type: string
+        type: array
+    type: object
+  musictrack_controller.TempOut:
+    properties:
+      success:
+        type: boolean
+    type: object
+  musictrack_controller.UploadTrackOutput:
+    properties:
+      file_path:
+        type: string
+    type: object
+  musictrack_controller.WriteMusicTrackInput:
+    properties:
+      album:
+        type: string
+      artist:
+        type: string
+      duration:
+        minimum: 1
+        type: integer
+      genre:
+        type: string
+      link:
+        type: string
+      title:
+        type: string
+      year:
+        minimum: 1
+        type: integer
+    required:
+    - album
+    - artist
+    - duration
+    - genre
+    - link
+    - title
+    - year
+    type: object
+  musictrack_controller.WriteMusicTrackOutput:
+    properties:
+      album:
+        type: string
+      artist:
+        type: string
+      duration:
+        type: integer
+      genre:
+        type: string
+      id:
+        type: string
+      link:
+        description: URL or local file path, get from storage
+        type: string
+      title:
+        type: string
+      year:
+        type: integer
+    type: object
+  playlist_controller.TempOut:
+    properties:
+      success:
+        type: boolean
+    type: object
+  playlist_controller.WritePlaylistInput:
+    properties:
+      description:
+        type: string
+      genre:
+        type: string
+      title:
+        type: string
+      track_ids:
+        items:
+          type: string
+        type: array
+    required:
+    - description
+    - genre
+    - title
+    type: object
+  playlist_controller.WritePlaylistOutput:
+    properties:
+      created_by:
+        type: string
+      description:
+        type: string
+      genre:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      tracks:
+        items:
+          $ref: '#/definitions/model.MusicTrack'
+        type: array
+    type: object
+info:
+  contact: {}
+  description: Hung.Phan apply for junior Golang developer position at EMVN
+  title: EMVN API
+  version: "1.0"
+paths:
+  /auth/signin:
+    post:
+      consumes:
+      - application/json
+      description: Sign in user, return token and exp time
+      parameters:
+      - description: Sign in user
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth_controller.SignInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth_controller.SignInOutput'
+      summary: Sign in user
+      tags:
+      - Auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Sign up new user
+      parameters:
+      - description: Sign up new user
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth_controller.SignUpInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth_controller.SignUpOutput'
+      summary: Sign up new user
+      tags:
+      - Auth
+  /music_track/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new music track with the given information. Must upload
+        the track file separately
+      parameters:
+      - description: Music track information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/musictrack_controller.WriteMusicTrackInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/musictrack_controller.WriteMusicTrackOutput'
+      security:
+      - BearerAuth: []
+      summary: Create a new music track
+      tags:
+      - Music Track
+  /music_track/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a music track by its ID
+      parameters:
+      - description: Music track ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/musictrack_controller.TempOut'
+      security:
+      - BearerAuth: []
+      summary: Delete a music track
+      tags:
+      - Music Track
+  /music_track/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a music track by its ID
+      parameters:
+      - description: Music track ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MusicTrack'
+      security:
+      - BearerAuth: []
+      summary: Get a music track by ID
+      tags:
+      - Music Track
+  /music_track/search:
+    get:
+      consumes:
+      - application/json
+      description: Search music tracks based on the provided criteria
+      parameters:
+      - description: Artist name
+        in: query
+        name: artist
+        type: string
+      - description: Album name
+        in: query
+        name: album
+        type: string
+      - description: Genre
+        in: query
+        name: genre
+        type: string
+      - description: Title
+        in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.MusicTrack'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Search music tracks
+      tags:
+      - Music Track
+  /music_track/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update a music track with the given information
+      parameters:
+      - description: Music track ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Music track information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/musictrack_controller.WriteMusicTrackInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/musictrack_controller.WriteMusicTrackOutput'
+      security:
+      - BearerAuth: []
+      summary: Update a music track
+      tags:
+      - Music Track
+  /music_track/upload:
+    post:
+      description: Upload a music track file
+      parameters:
+      - description: Music track file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/musictrack_controller.UploadTrackOutput'
+      security:
+      - BearerAuth: []
+      summary: Upload a music track
+      tags:
+      - Music Track
+  /playlist/create:
+    post:
+      consumes:
+      - application/json
+      description: Note that all track ids must be valid
+      parameters:
+      - description: Playlist information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/playlist_controller.WritePlaylistInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/playlist_controller.WritePlaylistOutput'
+      security:
+      - BearerAuth: []
+      summary: Create a new playlist
+      tags:
+      - Playlist
+  /playlist/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a playlist by its ID
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/playlist_controller.TempOut'
+      security:
+      - BearerAuth: []
+      summary: Delete a playlist by ID
+      tags:
+      - Playlist
+  /playlist/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a playlist by its ID
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/playlist_controller.WritePlaylistOutput'
+      security:
+      - BearerAuth: []
+      summary: Get a playlist by ID
+      tags:
+      - Playlist
+  /playlist/search:
+    get:
+      consumes:
+      - application/json
+      description: Search playlists based on title, description, and genre
+      parameters:
+      - description: Playlist title
+        in: query
+        name: title
+        type: string
+      - description: Playlist description
+        in: query
+        name: description
+        type: string
+      - description: Playlist genre
+        in: query
+        name: genre
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Playlist'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Search playlists based on criteria
+      tags:
+      - Playlist
+  /playlist/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update a playlist by its ID
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Playlist information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/playlist_controller.WritePlaylistInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/playlist_controller.WritePlaylistOutput'
+      security:
+      - BearerAuth: []
+      summary: Update a playlist by ID
+      tags:
+      - Playlist
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
