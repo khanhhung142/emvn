@@ -818,7 +818,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "EMVN API",
-	Description:      "Hung.Phan apply for junior Golang developer position at EMVN",
+	Description:      "Phan Trần Khánh Hưng EMVN",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
